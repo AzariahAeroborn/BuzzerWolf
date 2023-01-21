@@ -24,18 +24,19 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip"'
+    msbuildArgs: '/p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip /p:PackageLocation="$(build.artifactStagingDirectory)\WebApp.zip /p:DeployOnBuild=true /p:DeployTarget=Package"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: AzureAppServiceManage@0
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   inputs:
     azureSubscription: 'Pay-As-You-Go(686679ce-08b8-44c5-b619-04082b0f2fb7)'
     Action: 'Stop Azure App Service'
     WebAppName: 'buzzerwolf'
 
 - task: AzureRmWebAppDeployment@4
-  condition: ne(variables['Build.Reason'], 'PullRequest')
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Pay-As-You-Go(686679ce-08b8-44c5-b619-04082b0f2fb7)'
@@ -45,6 +46,7 @@ steps:
     RuntimeStack: 'DOTNETCORE|6.0'
 
 - task: AzureAppServiceManage@0
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   inputs:
     azureSubscription: 'Pay-As-You-Go(686679ce-08b8-44c5-b619-04082b0f2fb7)'
     Action: 'Start Azure App Service'
