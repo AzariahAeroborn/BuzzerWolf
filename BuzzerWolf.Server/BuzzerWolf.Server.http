@@ -1,0 +1,6 @@
+@BuzzerWolf.Server_HostAddress = http://localhost:5226
+
+GET {{BuzzerWolf.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
