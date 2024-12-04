@@ -56,7 +56,7 @@ namespace BuzzerWolf.Server
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IBBAPIClient, BBAPIClient>();
-            services.AddTransient<BuzzerWolfContext>();
+            //services.AddTransient<BuzzerWolfContext>();
             services.AddTransient<IBBDataService, BBDataService>();
         }
     }

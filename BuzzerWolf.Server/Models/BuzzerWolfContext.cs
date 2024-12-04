@@ -15,10 +15,10 @@ namespace BuzzerWolf.Server.Models
 
         public BuzzerWolfContext()
         {
-            _dbPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "BuzzerWolf", "buzzerwolf.db");
+            //_dbPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "BuzzerWolf", "buzzerwolf.db");
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite($"Data Source={_dbPath}");
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite($"Data Source={_dbPath}");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
