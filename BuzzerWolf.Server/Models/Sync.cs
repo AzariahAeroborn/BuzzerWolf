@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public int? TeamId { get; set; }
         public SyncTable Table { get; set; }
-        public string? Params { get; set; }
-
+        public int? EntityId { get; set; }
+        public int? Season { get; set; }
         public DateTimeOffset LastSync { get; set; }
         public DateTimeOffset NextAutoSync { get; set; }
     }
@@ -15,6 +15,7 @@
     {
         Season,
         Country,
+        League,
         PromotionStanding
     }
 }

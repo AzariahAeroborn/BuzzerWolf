@@ -8,17 +8,17 @@ namespace BuzzerWolf.Server.Models
 
         public DbSet<Country> Countries { get; set; }
         public DbSet<Season> Seasons { get; set; }
+        public DbSet<League> Leagues { get; set; }
         public DbSet<Sync> Sync { get; set; }
-        public DbSet<PromotionStanding> PromotionStandings { get; set; }
 
-        private string _dbPath;
+        private readonly IConfiguration _configuration;
 
-        public BuzzerWolfContext()
+        public BuzzerWolfContext(IConfiguration configuration)
         {
-            //_dbPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "BuzzerWolf", "buzzerwolf.db");
+            _configuration = configuration;
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite($"Data Source={_dbPath}");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer(_configuration.GetConnectionString("BuzzerWolfContext"));
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

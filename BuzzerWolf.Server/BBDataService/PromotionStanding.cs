@@ -7,7 +7,7 @@ namespace BuzzerWolf.Server
     {
         public async Task<List<PromotionStanding>> GetPromotionStandings(int country, int division, int? season = null)
         {
-            season ??= await GetCurrentSeason();
+            season ??= (await GetCurrentSeason()).Id;
             var auto = 0;
             var total = 0;
             var bot = 0;
