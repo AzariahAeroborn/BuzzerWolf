@@ -1,6 +1,7 @@
 using BuzzerWolf.BBAPI;
 using BuzzerWolf.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuzzerWolf.Server
 {
@@ -28,8 +29,11 @@ namespace BuzzerWolf.Server
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            using var scope = app.Services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<BuzzerWolfContext>();
+            db.Database.Migrate();
 
-            app.UseCookiePolicy(new CookiePolicyOptions {  MinimumSameSitePolicy = SameSiteMode.Strict });
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -55,9 +59,9 @@ namespace BuzzerWolf.Server
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IBBAPIClient, BBAPIClient>();
-            //services.AddTransient<BuzzerWolfContext>();
-            services.AddTransient<IBBDataService, BBDataService>();
+            services.AddScoped<IBBAPIClient, BBAPIClient>();
+            services.AddScoped<BuzzerWolfContext>();
+            services.AddScoped<IBBDataService, BBDataService>();
         }
     }
 }
