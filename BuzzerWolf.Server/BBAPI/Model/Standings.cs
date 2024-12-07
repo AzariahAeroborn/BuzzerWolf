@@ -1,6 +1,4 @@
 ﻿using BuzzerWolf.Extensions;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 
 namespace BuzzerWolf.BBAPI.Model
@@ -9,8 +7,11 @@ namespace BuzzerWolf.BBAPI.Model
     {
         public Standings(XElement bbapiResponse)
         {
-            League = new League(bbapiResponse.Descendants("league").First());
             Country = new Country(bbapiResponse.Descendants("country").First());
+            var league = bbapiResponse.Descendants("league").First();
+            var level = int.Parse(league.Attribute("level")!.Value);
+            League = new League(league, Country.Id, level);
+            Season = int.Parse(bbapiResponse.Descendants("standings").First().Attribute("season")!.Value);
 
             Big8 = new List<TeamStanding>();
             Great8 = new List<TeamStanding>();
@@ -39,6 +40,7 @@ namespace BuzzerWolf.BBAPI.Model
             }
         }
 
+        public int Season { get; set; }
         public League League { get; set; }
         public Country Country { get; set; }
         public List<TeamStanding> Big8 { get; }

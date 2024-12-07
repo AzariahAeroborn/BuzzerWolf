@@ -235,7 +235,7 @@ namespace BuzzerWolf.BBAPI
                 var leaguesList = new List<League>();
                 foreach (var league in bbapi.Response.Descendants("league"))
                 {
-                    leaguesList.Add(new League(league));
+                    leaguesList.Add(new League(league, countryId, level));
                 }
                 return leaguesList;
             }

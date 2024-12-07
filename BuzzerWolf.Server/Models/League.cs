@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BuzzerWolf.Server.Models
 {
@@ -12,6 +13,7 @@ namespace BuzzerWolf.Server.Models
         public string Name { get; set; }
         public int DivisionLevel { get; set; }
 
+        [JsonIgnore]
         public Country Country { get; set; }
     }
 }

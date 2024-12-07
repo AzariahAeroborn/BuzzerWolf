@@ -6,27 +6,33 @@ namespace BuzzerWolf.Server
 {
     public partial class BBDataService : IBBDataService
     {
-        private static readonly SemaphoreSlim syncCountry = new(1);
-        private async Task SynchronizeCountry()
+        private async Task SynchronizeCountry(bool syncRequested)
         {
-            syncCountry.Wait();
+            var syncEntity = new SynchronizedEntity(SyncTable.Country);
+            if (!await ShouldSync(syncEntity, syncRequested))
+                return;
+
+            var syncLock = SyncLockDictionary.GetOrAdd(syncEntity, new SemaphoreSlim(1));
+            await syncLock.WaitAsync();
             try
             {
-                var countrySyncRecord = await GetTableSyncRecord(SyncTable.Country);
-                if (countrySyncRecord.NextAutoSync <= DateTimeOffset.UtcNow)
+                if (await ShouldSync(syncEntity, syncRequested))
                 {
                     var countryList = await bbapi.GetCountries();
-                    context.Countries.UpsertRange(countryList.FromBBAPI()).Run();
+                    var context = serviceProvider.GetRequiredService<BuzzerWolfContext>();
+                    await context.Countries.UpsertRange(countryList.FromBBAPI()).RunAsync();
                     var currentSeason = await this.GetCurrentSeason();
-                    await UpdateTableSyncRecord(countrySyncRecord, currentSeason?.Start.AddDays(seasonLength) ?? DateTimeOffset.UtcNow.AddDays(7));
+                    var nextSyncTime = currentSeason?.Start.AddDays(seasonLength) ?? DateTimeOffset.UtcNow.AddDays(7);
+                    await UpdateSyncRecord(syncEntity, nextSyncTime);
                 }
             }
-            finally { syncCountry.Release(); }
+            finally { syncLock.Release(); }
         }
 
-        public async Task<List<Country>> GetCountryList()
+        public async Task<List<Country>> GetCountryList(bool syncRequested = false)
         {
-            await SynchronizeCountry();
+            await SynchronizeCountry(syncRequested);
+            var context = serviceProvider.GetRequiredService<BuzzerWolfContext>();
             return await context.Countries.ToListAsync();
         }
     }

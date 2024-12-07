@@ -2,7 +2,6 @@
 {
     public class PromotionStanding
     {
-        public int Id { get; set; }
         public int Country { get; set; }
         public int Division { get; set; }
         public int Season { get; set; }
