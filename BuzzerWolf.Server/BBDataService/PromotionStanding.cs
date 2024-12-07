@@ -1,71 +1,70 @@
-﻿using BuzzerWolf.BBAPI.Model;
-using BuzzerWolf.Server.Models;
+﻿using BuzzerWolf.Server.Models;
+using BuzzerWolf.Server.Models.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuzzerWolf.Server
 {
     public partial class BBDataService : IBBDataService
     {
-        public async Task<List<PromotionStanding>> GetPromotionStandings(int country, int division, int? season = null)
+        private async Task SynchronizeLeagueStandings(int leagueId, int season, bool syncRequested)
+        {
+            var syncEntity = new SynchronizedEntity(SyncTable.LeagueStandings, entityId: leagueId, forSeason: season);
+            if (!await ShouldSync(syncEntity, syncRequested))
+                return;
+
+            var syncLock = SyncLockDictionary.GetOrAdd(syncEntity, new SemaphoreSlim(1));
+            await syncLock.WaitAsync();
+            try
+            {
+                if (await ShouldSync(syncEntity, syncRequested))
+                {
+                    var context = serviceProvider.GetRequiredService<BuzzerWolfContext>();
+                    await context.LeagueStandings.UpsertRange((await bbapi.GetStandings(leagueId, season)).FromBBAPI()).RunAsync();
+                    var nextSyncTime = DateTimeOffset.UtcNow + TimeSpan.FromHours(1);
+                    await UpdateSyncRecord(syncEntity, nextSyncTime);
+                }
+            }
+            finally { syncLock.Release(); }
+        }
+
+        public async Task<List<PromotionStanding>> GetPromotionStandings(int country, int division, int? season = null, bool syncRequested = false)
         {
             season ??= (await GetCurrentSeason()).Id;
             var auto = 0;
             var total = 0;
             var bot = 0;
 
-            var leaguesList = await bbapi.GetLeagues(country, division);
-            var standings = new List<TeamStanding>();
+            var leaguesList = await GetLeagues(country, division);
+            var leagueStandingsSyncTasks = new List<Task>();
             foreach (var league in leaguesList)
             {
-                var leagueStandings = await bbapi.GetStandings(league.Id, season);
-                if (leagueStandings.IsFinal)
-                {
-                    var winner = leagueStandings.Big8.Where(t => t.IsWinner).Union(leagueStandings.Great8.Where(t => t.IsWinner)).First();
-                    if (winner.IsBot) { bot++; }
-                }
-                standings.AddRange(leagueStandings.Big8);
-                standings.AddRange(leagueStandings.Great8);
+                leagueStandingsSyncTasks.Add(SynchronizeLeagueStandings(league.Id, (int)season, syncRequested));
             }
-
-            var nextDivisionHigher = (int)division - 1;
-            var checkDivision = nextDivisionHigher;
-            do
+            for (int higherDivision = division - 1; higherDivision >= 1; higherDivision--)
             {
-                var promotingLeaguesList = Task.Run(() => bbapi.GetLeagues(country, checkDivision)).Result;
-                foreach (var league in promotingLeaguesList)
+                var higherDivisionLeaguesList = await GetLeagues(country, higherDivision);
+                foreach (var league in higherDivisionLeaguesList)
                 {
-                    int leagueBots = 0;
-                    var leagueStandings = Task.Run(() => bbapi.GetStandings(league.Id)).Result;
-                    if (checkDivision == nextDivisionHigher)
+                    leagueStandingsSyncTasks.Add(SynchronizeLeagueStandings(league.Id, (int)season, syncRequested));
+                    if (higherDivision == division - 1)
                     {
-                        if (leagueStandings.IsFinal)
-                        {
-
-                        }
-                        else
-                        {
-                            leagueBots = leagueStandings.Big8.Count(t => t.ConferenceRank < 8 && t.IsBot) + leagueStandings.Great8.Count(t => t.ConferenceRank < 8 && t.IsBot);
-                        }
+                        total += league.Country.Name == "Utopia" ? 6 : 5;
                     }
-                    else
-                    {
-                        leagueBots = leagueStandings.Big8.Count(t => t.IsBot) + leagueStandings.Great8.Count(t => t.IsBot);
-                    }
-
-                    if (checkDivision == nextDivisionHigher)
-                    {
-                        auto += 1;
-                        total += 5;
-                    }
-
-                    total += leagueBots;
-                    bot += leagueBots;
                 }
+            }
+            auto = total - leaguesList.Count;
 
-                checkDivision--;
-            } while (checkDivision >= 1);
+            await Task.WhenAll(leagueStandingsSyncTasks);
 
-            var champ = standings.Count(s => s.IsWinner);
-            return standings.Where(s => s.IsWinner || s.ConferenceRank <= 2)
+            var context = serviceProvider.GetRequiredService<BuzzerWolfContext>();
+            var standings = context.LeagueStandings.Include(s => s.League).Where(s => s.League.CountryId == country && s.League.DivisionLevel == division && s.Season == season && s.ConferenceRank <= 2).ToList();
+            var bots = context.LeagueStandings.Where(s => s.League.CountryId == country && s.League.DivisionLevel < division && s.Season == season && s.IsBot && s.ConferenceRank < 8).Count();
+            total += bots;
+
+            return standings
+                    .OrderBy(s => s.ConferenceRank)
+                    .ThenByDescending(s => s.Wins)
+                    .ThenByDescending(s => s.PointsFor - s.PointsAgainst)
                     .Select((s, idx) => new PromotionStanding
                     {
                         Country = country,
@@ -75,15 +74,15 @@ namespace BuzzerWolf.Server
                         TeamName = s.TeamName,
                         Wins = s.Wins,
                         Losses = s.Losses,
-                        PointDifference = s.PointDifference,
+                        PointDifference = s.PointsFor - s.PointsAgainst,
                         ConferenceRank = s.ConferenceRank,
-                        LeagueName = s.LeagueName,
-                        ConferenceName = s.ConferenceName,
+                        LeagueName = s.League.Name,
+                        ConferenceName = s.Conference.ToString(),
                         PromotionRank = idx + 1,
-                        IsChampionPromotion = s.IsWinner,
-                        IsAutoPromotion = !s.IsWinner && (idx + 1) <= (champ + auto),
-                        IsBotPromotion = !s.IsWinner && (idx + 1) > (champ + auto) && (idx + 1) <= (champ + auto + bot),
-                        IsTotalPromotion = !s.IsWinner && (idx + 1) > (champ + auto + bot) && (idx + 1) <= total,
+                        IsChampionPromotion = false,
+                        IsAutoPromotion = (idx + 1) <= (auto),
+                        IsBotPromotion = (idx + 1) > (auto) && (idx + 1) <= (auto + bot),
+                        IsTotalPromotion = (idx + 1) > (auto + bot) && (idx + 1) <= total,
                     }).ToList();
         }
     }

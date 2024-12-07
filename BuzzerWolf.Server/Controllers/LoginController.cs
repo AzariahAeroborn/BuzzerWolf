@@ -23,11 +23,13 @@ namespace BuzzerWolf.Server.Controllers
         {
             if (await _bbapi.Login(userName, accessKey, secondTeam))
             {
+                var teamInfo = await _bbapi.GetTeamInfo();
                 var claims = new List<Claim>
                 {
                     new Claim("userName", userName),
                     new Claim("accessKey", accessKey),
                     new Claim("secondTeam", secondTeam.ToString()),
+                    new Claim("teamId", teamInfo.Id.ToString()),
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

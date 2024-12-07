@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace BuzzerWolf.BBAPI.Model
 {
@@ -20,8 +18,10 @@ namespace BuzzerWolf.BBAPI.Model
                 LastLoginDate = DateTime.Parse(lastLogin.Value);
             }
 
-            League = new League(bbapiResponse.Descendants("league").First());
             Country = new Country(bbapiResponse.Descendants("country").First());
+            var league = bbapiResponse.Descendants("league").First();
+            var level = int.Parse(league.Attribute("level")!.Value);
+            League = new League(league, Country.Id, level);
             Rival = new TeamRival(bbapiResponse.Descendants("rival").First());
         }
 

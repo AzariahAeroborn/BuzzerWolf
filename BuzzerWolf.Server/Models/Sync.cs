@@ -16,6 +16,21 @@
         Season,
         Country,
         League,
-        PromotionStanding
+        LeagueStandings
+    }
+
+    public class SynchronizedEntity
+    {
+        public SynchronizedEntity(SyncTable table, int? forTeam = null, int? entityId = null, int? forSeason = null)
+        {
+            Table = table;
+            TeamId = forTeam;
+            EntityId = entityId;
+            Season = forSeason;
+        }
+        public SyncTable Table { get; }
+        public int? TeamId { get; }
+        public int? EntityId { get; }
+        public int? Season { get; }
     }
 }
