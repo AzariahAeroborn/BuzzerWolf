@@ -18,5 +18,15 @@ same machine it is installed on, with no authentication required.  After SQL Ser
 SQL Server Management Studio (SSMS) to connect to the database.  When connected to the database, you need to run the command `CREATE DATABASE [buzzerwolf]` to create the initial database.  
 No other setup steps are required for initalization -- the BuzzerWolf server will automatically initalize the database with the required tables and data on first run.
 
+# Setup & First run 
+After checking out the code, you will need to set up a local version of the appsettings.Development.config file to populate required information for connecting to the BBAPI for certain synchronization operations.
+1. Navigate to the folder where you checked out the BuzzerWolf code
+2. Go to the BuzzerWolf.Server folder, and copy appsettings.Development.json.sample and rename the copy to appsettings.Development.json
+3. Open the appsettings.Development.json file and fill in the UserName and AccessKey values for the BBAPIPublicUser configuration value with your BuzzerBeater user name and BBAPI access key.  
+This credential is used by certain synchronization tasks to retrieve data that isn't team specific (league standings, team schedules, etc) but the online service needs to cache periodically to reduce load times and the number of 
+requests we send to the BBAPI.  Setting that in appsettings.Development.json will only use your API account when you're developing on your local machine and won't effect the account we use online or provide data from your API access
+to any other developer or user. **Be sure not to add any credentials in the appsettings.Development.json.sample file!**
+**The solution's .gitignore file is set up to ensure you don't accidentally commit changes to the running appsettings.Development.json file, which needs those credentials, but changes to the sample file will be added to source control and visible to other people.**
+
 # Contribute
 All contributions must be submitted under the MIT License
