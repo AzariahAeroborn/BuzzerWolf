@@ -7,5 +7,9 @@
   },
   "ConnectionStrings": {
     "BuzzerWolfContext": "Server=.\\SQLExpress;Database=buzzerwolf;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+  },
+  "BBAPIPublicUser": {
+    "UserName": "",
+    "AccessKey": ""
   }
 }
