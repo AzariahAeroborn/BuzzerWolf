@@ -62,11 +62,12 @@ export function usePublicApi() {
     }
   ) => makePublicApiCall(endpoint, 'POST', options);
 
-  const login = (username: string, accessKey: string) =>
+  const login = (username: string, accessKey: string, secondTeam: boolean) =>
     post('/login', {
       query: {
         username: username,
         accessKey: accessKey,
+        secondTeam: secondTeam,
       },
     });
 

@@ -7,12 +7,13 @@ export default function LoginForm({
   onLogin,
   onSuccess,
 }: {
-  onLogin: (username: string, accessKey: string) => Promise<void>;
+  onLogin: (username: string, accessKey: string, secondTeam: boolean) => Promise<void>;
   onSuccess?: () => void; // Optional, with default behavior
 }) {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [accessKey, setAccessKey] = useState('');
+  const [secondTeam, setSecondTeam] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,7 +21,7 @@ export default function LoginForm({
     setError('');
 
     try {
-      await onLogin(username, accessKey); // Authenticate the user
+      await onLogin(username, accessKey, secondTeam); // Authenticate the user
       if (onSuccess) {
         onSuccess(); // Call the custom success handler if provided
       } else {
@@ -69,6 +70,17 @@ export default function LoginForm({
           className="w-full px-3 py-2 border border-neutral focus:border-primary focus:ring focus:ring-primary-light bg-background text-foreground rounded"
           required
         />
+      </div>
+      <div className="mb-4">
+        <label className="flex items-center text-foreground text-sm">
+          <input
+            type="checkbox"
+            checked={secondTeam}
+            onChange={(e) => setSecondTeam(e.target.checked)}
+            className="mr-2"
+          />
+          Log in as Second Team
+        </label>
       </div>
       <button
         type="submit"

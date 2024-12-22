@@ -6,8 +6,8 @@ import { useAuth } from '@/context/AuthContext';
 export default function LoginPage() {
   const { login } = useAuth();
 
-  const handleLogin = async (username: string, accessKey: string) => {
-    await login({ username, accessKey }); // default behavior on success is to redirect to /home
+  const handleLogin = async (username: string, accessKey: string, secondTeam: boolean) => {
+    await login({ username, accessKey, secondTeam }); // default behavior on success is to redirect to /home
   };
 
   return (

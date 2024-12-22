@@ -6,6 +6,7 @@ import { usePublicApi } from '@/hooks/BuzzerWolfPublicApi';
 export interface Credentials {
   username: string;
   accessKey: string;
+  secondTeam: boolean;
 }
 
 interface AuthContextType {
@@ -22,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { login: apiLogin } = usePublicApi();
 
   const login = async (credentials: Credentials) => {
-    await apiLogin(credentials.username, credentials.accessKey); // Call API to verify credentials as our idea of 'login'
+    await apiLogin(credentials.username, credentials.accessKey, credentials.secondTeam); // Call API to verify credentials as our idea of 'login'
     setAuth(credentials); // Update auth state
   };
 

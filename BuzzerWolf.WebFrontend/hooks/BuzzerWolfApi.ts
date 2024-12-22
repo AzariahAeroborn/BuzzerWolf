@@ -24,6 +24,8 @@ export function useApi() {
 
     // Construct query parameters
     let url = `${API_URL}${endpoint}`;
+    console.log("Got url:", url);
+    console.log("from endpoint:", endpoint);
     if (options?.query) {
       const params = new URLSearchParams(
         Object.entries(options.query).map(([key, value]) => [key, String(value)])
@@ -34,6 +36,7 @@ export function useApi() {
     // Prepare fetch options
     const fetchOptions: RequestInit = {
       method,
+      credentials: 'include', // needed for cookie-style auth
       headers: {
         'Content-Type': 'application/json',
         'X-Username': username,
@@ -80,7 +83,10 @@ export function useApi() {
       },
     });
 
-  const country = () => get('/country');
+  const country = () => {
+    console.log("requesting countries");
+    return get('/country');
+  }
 
   return { makeApiCall, login, country };
 }

@@ -54,7 +54,19 @@ namespace BuzzerWolf.Server
             var db = scope.ServiceProvider.GetRequiredService<BuzzerWolfContext>();
             db.Database.Migrate();
 
-            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
+            // TODO: AP: merging the frontend and the api into kinda this one server is making the auth situation pretty confusing
+            //app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
+            CookieSecurePolicy cookieSecurityPolicy = CookieSecurePolicy.Always;
+            if(app.Environment.IsDevelopment())
+            {
+                cookieSecurityPolicy = CookieSecurePolicy.SameAsRequest;
+            }
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.None, // Allow cross-origin cookies
+                Secure = cookieSecurityPolicy
+            });
+
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
