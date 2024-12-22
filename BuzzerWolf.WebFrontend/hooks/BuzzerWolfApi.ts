@@ -6,7 +6,7 @@ import { useAuth, Credentials } from '@/context/AuthContext';
 const API_URL = 'http://localhost:8080';
 
 export function useApi() {
-  const { getCredentials } = useAuth();
+  const { getCredentials, logout } = useAuth();
 
   const makeApiCall = useCallback(
     async (
@@ -52,6 +52,13 @@ export function useApi() {
 
       const response = await fetch(url, fetchOptions);
 
+      if (response.status === 401 || response.status === 403) {
+        // Unauthorized or forbidden: likely due to expired or invalid session
+        console.log(`response status ${response.status}, logging out`);
+        logout(); // Log the user out
+        throw new Error('Session expired or unauthorized.');
+      }
+
       if (!response.ok) {
         throw new Error(`API call failed: ${response.statusText}`);
       }
@@ -85,17 +92,6 @@ export function useApi() {
     [makeApiCall]
   );
 
-  const login = useCallback(
-    (credentials: Credentials) =>
-      post('/login', {
-        query: {
-          username: credentials.username,
-          accessKey: credentials.accessKey,
-        },
-      }),
-    [post]
-  );
-
   const country = useCallback(() => get('/country'), [get]);
 
   const currentSeason = useCallback(() => get('/season/current'), [get]);
@@ -103,7 +99,7 @@ export function useApi() {
 
   // Memoize the returned API methods to ensure stability
   return useMemo(() =>
-    ({ makeApiCall, login, country, currentSeason }),
-      [makeApiCall, login, country, currentSeason]
+    ({ makeApiCall, country, currentSeason }),
+      [makeApiCall, country, currentSeason]
   );
 }

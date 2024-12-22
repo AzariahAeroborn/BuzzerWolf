@@ -1,7 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { usePublicApi } from '@/hooks/BuzzerWolfPublicApi';
+
+const AUTH_STORAGE_KEY = 'buzzerwolf_auth';
 
 export interface Credentials {
   username: string;
@@ -19,17 +21,39 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [auth, setAuth] = useState<Credentials | null>(null);
+  const [auth, setAuth] = useState<Credentials | null>(() => {
+    if (typeof window !== 'undefined') {
+      const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
+      return storedAuth ? JSON.parse(storedAuth) : null;
+    }
+    return null;
+  });
   const { login: apiLogin } = usePublicApi();
 
   const login = async (credentials: Credentials) => {
     await apiLogin(credentials.username, credentials.accessKey, credentials.secondTeam); // Call API to verify credentials as our idea of 'login'
     setAuth(credentials); // Update auth state
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(credentials)); // Persist auth state in localStorage
   };
 
-  const logout = () => setAuth(null);
+  const logout = () => {
+    setAuth(null);
+    localStorage.removeItem(AUTH_STORAGE_KEY); // Clear localStorage
+  };
 
   const getCredentials = () => auth; // Simple accessor for auth state
+
+  // Sync auth state across tabs
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === AUTH_STORAGE_KEY) {
+        setAuth(event.newValue ? JSON.parse(event.newValue) : null);
+      }
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ auth, login, logout, getCredentials }}>

@@ -40,12 +40,21 @@ export default function TeamHome() {
         <h2 className="text-lg font-bold">Current Season</h2>
         {loading && <p>Loading...</p>}
         {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && (
-          <div>
-            <strong>Current Season:</strong> {currentSeasonInfo?.id}
-            <strong>Start:</strong> {currentSeasonInfo?.start}
-            <strong>Finish:</strong> {currentSeasonInfo?.finish || 'N/A'}
+        {!loading && !error && currentSeasonInfo && (
+          <div className="flex flex-col gap-4 text-gray-700">
+          <div className="flex justify-between">
+            <span className="font-medium">Current Season:</span>
+            <span>{currentSeasonInfo.id}</span>
           </div>
+          <div className="flex justify-between">
+            <span className="font-medium">Start:</span>
+            <span>{currentSeasonInfo.start}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium">Finish:</span>
+            <span>{currentSeasonInfo.finish || 'N/A'}</span>
+          </div>
+        </div>
         )}
       </div>
     </div>

@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 
 const Sidebar = () => {
+  const { logout } = useAuth();
+
   return (
     <div className="w-64 h-screen bg-sidebar-bg text-sidebar-text flex flex-col p-4">
       <h1 className="text-xl font-bold mb-6">BuzzerWolf</h1>
@@ -14,14 +17,17 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Link href="/leagues" className="block px-4 py-2 rounded hover:bg-sidebar-hover">
-              Leagues
+            <Link href="/current-season" className="block px-4 py-2 rounded hover:bg-sidebar-hover">
+              Current Season
             </Link>
           </li>
           <li>
-            <Link href="/logout" className="block px-4 py-2 rounded hover:bg-sidebar-hover">
+            <button
+              onClick={logout}
+              className="block px-4 py-2 rounded hover:bg-sidebar-hover text-left w-full"
+            >
               Log Out
-            </Link>
+            </button>
           </li>
         </ul>
       </nav>
