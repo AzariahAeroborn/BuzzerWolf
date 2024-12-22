@@ -32,8 +32,8 @@ namespace BuzzerWolf.Server
             builder.Services.AddSwaggerGen();
 
             // nextjs .net static hosting
-            //builder.Services.Configure<NextjsStaticHostingOptions>(builder.Configuration.GetSection("NextjsStaticHosting"));
-            //builder.Services.AddNextjsStaticHosting();
+            builder.Services.Configure<NextjsStaticHostingOptions>(builder.Configuration.GetSection("NextjsStaticHosting"));
+            builder.Services.AddNextjsStaticHosting();
 
             var app = builder.Build();
             using var scope = app.Services.CreateScope();
@@ -62,9 +62,9 @@ namespace BuzzerWolf.Server
             app.MapFallbackToFile("/index.html");
 
             // nextjs static .net hosting integration
-            //app.UseRouting(); // TODO: nextjsstatichosting docs assumed this would already be present, so I added it
-            //app.MapNextjsStaticHtmls();
-            //app.UseNextjsStaticHosting();
+            app.UseRouting(); // TODO: nextjsstatichosting docs assumed this would already be present, so I added it
+            app.MapNextjsStaticHtmls();
+            app.UseNextjsStaticHosting();
 
             app.Run();
         }

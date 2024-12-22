@@ -1,28 +1,36 @@
 # BuzzerWolf WebFrontend
 
-A NextJS project at least somewhat-integrated with VS development.
+A NextJS project at least somewhat-integrated with VS development and made easy to deploy to a Windows .NET server for hosting.
 
 Uses NextjsStaticHosting.AspNetCore:
 - [Repo](https://github.com/davidnx/NextjsStaticHosting-AspNetCore)
 - [Blog Post](https://medium.com/@david.nissimoff/next-js-meets-asp-net-core-a-story-of-performance-and-love-at-long-tail-41cf9231b2de)
 
-Take note of the limitations, mainly that everything has to be static content (no server components)
- 
+Take note of the limitations, mainly that everything has to be static content (no server components).
+
+## First time setup
+
+I'm pretty sure you do still need Node.js for development purposes: after all `npm` commands have to come from somewhere. I don't know the best way to do that on Windows, hopefully the next person to do it can take notes.
+
+I expect you also have to do `npm i` for package installations, once on initial setup and then any time as usual when changing package.json dependencies:
+```
+$(BuzzerWolf/BuzzerWolf.WebFrontend)> npm i
+```
+
 ## General Usage
 
-For development it's probably more convenient to do normal NextJS development per the default readme below
+For development it's probably more convenient to do normal NextJS development per the default readme below; if you're using the BuzzerWolf.Server I don't know how to get it to do hot reload, you have to manually rerun the NextJS build every time.
 
-For running with BuzzerWolf, do
+For using with BuzzerWolf.Server, do
 ```
-npx next build
+$(BuzzerWolf/BuzzerWolf.WebFrontend)> npx next build
 ```
 
-then copy the generated files from /out to.... somewhere that I haven't figured out yet. Could be nice to automate that someday, maybe integrate it with VS.
+then run the Buzzerwolf Server and hopefully it will do both "frontend" and "backend" type things. for example try the localhost:8080 (Home Page)[http://localhost:8080]
 
-run the Buzzerwolf Server and hopefully it will do both "frontend" and "backend" type things. I guess we'll find out!
+note that `npm run dev` by default uses port 3000 and at time of writing BuzzerWolf.Server is configured for port 8080
 
-
-# Below is the standard default NextJS Readme
+# Below follows the standard default NextJS Readme
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
