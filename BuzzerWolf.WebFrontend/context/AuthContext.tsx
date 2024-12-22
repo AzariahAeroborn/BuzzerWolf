@@ -1,5 +1,7 @@
+'use client';
+
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { useApi } from '@/hooks/BuzzerWolfApi';
+import { usePublicApi } from '@/hooks/BuzzerWolfPublicApi';
 
 export interface Credentials {
   username: string;
@@ -17,10 +19,10 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<Credentials | null>(null);
-  const { login: apiLogin } = useApi();
+  const { login: apiLogin } = usePublicApi();
 
   const login = async (credentials: Credentials) => {
-    await apiLogin(credentials); // Call API to verify credentials as our idea of 'login'
+    await apiLogin(credentials.username, credentials.accessKey); // Call API to verify credentials as our idea of 'login'
     setAuth(credentials); // Update auth state
   };
 

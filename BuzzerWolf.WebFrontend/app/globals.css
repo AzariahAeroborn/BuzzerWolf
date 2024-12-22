@@ -2,18 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light Mode Variables */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #4F46E5; /* Example primary color */
+  --primary-light: #6366F1;
+  --primary-dark: #4338CA;
+  --secondary: #D97706; /* Example secondary color */
+  --secondary-light: #FBBF24;
+  --secondary-dark: #B45309;
+  --neutral: #6B7280; /* Neutral gray */
+  --neutral-light: #A1A1AA;
+  --neutral-dark: #374151;
 }
 
+/* Dark Mode Variables */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primary: #6366F1; /* Slightly lighter primary for dark mode */
+    --primary-light: #818CF8;
+    --primary-dark: #4338CA;
+    --secondary: #F59E0B; /* Warmer secondary for dark mode */
+    --secondary-light: #FDE68A;
+    --secondary-dark: #B45309;
+    --neutral: #D1D5DB;
+    --neutral-light: #E5E7EB;
+    --neutral-dark: #4B5563;
   }
 }
 
+/* Default body styles */
 body {
   color: var(--foreground);
   background: var(--background);

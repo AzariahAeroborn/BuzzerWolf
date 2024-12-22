@@ -1,13 +1,10 @@
 'use client';
 
-import { useAuth, Credentials } from '@/context/AuthContext';
-
 const API_URL = 'http://localhost:8080';
 
-export function useApi() {
-  const { getCredentials } = useAuth();
+export function usePublicApi() {
 
-  const makeApiCall = async (
+  const makePublicApiCall = async (
     endpoint: string,
     method: 'GET' | 'POST',
     options?: {
@@ -15,13 +12,6 @@ export function useApi() {
       body?: Record<string, any>;
     }
   ) => {
-    const credentials = getCredentials();
-    if (!credentials) {
-      throw new Error('User is not logged in.');
-    }
-
-    const { username, accessKey } = credentials;
-
     // Construct query parameters
     let url = `${API_URL}${endpoint}`;
     if (options?.query) {
@@ -36,8 +26,6 @@ export function useApi() {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'X-Username': username,
-        Authorization: `Bearer ${accessKey}`,
       },
     };
 
@@ -55,7 +43,7 @@ export function useApi() {
   };
 
   const get = (endpoint: string, query?: Record<string, string | number | boolean>) =>
-    makeApiCall(endpoint, 'GET', { query });
+    makePublicApiCall(endpoint, 'GET', { query });
 
   const post = (
     endpoint: string,
@@ -63,17 +51,15 @@ export function useApi() {
       query?: Record<string, string | number | boolean>;
       body?: Record<string, any>;
     }
-  ) => makeApiCall(endpoint, 'POST', options);
+  ) => makePublicApiCall(endpoint, 'POST', options);
 
-  const login = (credentials: Credentials) =>
+  const login = (username: string, accessKey: string) =>
     post('/login', {
       query: {
-        username: credentials.username,
-        accessKey: credentials.accessKey,
+        username: username,
+        accessKey: accessKey,
       },
     });
 
-  const country = () => get('/country');
-
-  return { makeApiCall, login, country };
+  return { makePublicApiCall, login };
 }
