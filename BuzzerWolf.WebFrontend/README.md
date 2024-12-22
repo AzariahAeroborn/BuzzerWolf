@@ -30,6 +30,38 @@ then run the Buzzerwolf Server and hopefully it will do both "frontend" and "bac
 
 note that `npm run dev` by default uses port 3000 and at time of writing BuzzerWolf.Server is configured for port 8080
 
+## Static site limitation
+
+I'm pretty sure it's gonna be important that the `npx next build` output looks something like this:
+```
+PS D:\Projects\personal\BuzzerWolf\BuzzerWolf.WebFrontend> npx next build
+   ▲ Next.js 15.1.2
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+ ✓ Linting and checking validity of types
+ ✓ Collecting page data
+ ✓ Generating static pages (7/7)
+ ✓ Collecting build traces
+ ✓ Exporting (3/3)
+ ✓ Finalizing page optimization
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    2.13 kB         108 kB
+├ ○ /_not-found                          979 B           106 kB
+├ ○ /current-season                      1.67 kB         107 kB
+└ ○ /home                                1.66 kB         107 kB
++ First Load JS shared by all            105 kB
+  ├ chunks/4bd1b696-fed0672e40b633cf.js  52.9 kB
+  ├ chunks/517-9e9f589ae5033886.js       50.5 kB
+  └ other shared chunks (total)          1.98 kB
+
+
+○  (Static)  prerendered as static content
+```
+
+with everything shown as `o  (Static)` and nothing "dynamic" or "server" or "SSR" or "on demand" or anything like that.
+
 # Below follows the standard default NextJS Readme
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
