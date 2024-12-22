@@ -10,7 +10,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
 
   useEffect(() => {
     if (!auth) {
-      router.push('/login'); // Redirect to login if not authenticated
+      router.push('/'); // Redirect to home (login) if not authenticated
     }
   }, [auth, router]);
 

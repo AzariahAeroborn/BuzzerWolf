@@ -51,6 +51,13 @@ export function useApi() {
       throw new Error(`API call failed: ${response.statusText}`);
     }
 
+    // Check if the response body is empty before parsing as JSON
+    const contentLength = response.headers.get('Content-Length');
+    if (contentLength === '0' || response.status === 204) {
+      // Empty success response (e.g., HTTP 204 No Content)
+      return null;
+    }
+
     return response.json();
   };
 

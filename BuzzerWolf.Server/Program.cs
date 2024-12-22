@@ -14,6 +14,20 @@ namespace BuzzerWolf.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-9.0#cors-with-named-policy-and-middleware
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:3000") // can add more origins like policy.WithOrigins("http://localhost:3000", "http://localhost:3001", ...)
+                                            .AllowAnyHeader() // Allow any headers (e.g., Content-Type, Authorization)
+                                            .AllowAnyMethod() // Allow any HTTP methods (GET, POST, etc.)
+                                            .AllowCredentials(); // looks like we're lining up to support this? though in my experience it's a bit annoying
+                                  });
+            });
+
             // Support cookie authentication
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -45,6 +59,11 @@ namespace BuzzerWolf.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            // nextjs static .net hosting integration
+            app.UseRouting(); // TODO: nextjsstatichosting docs assumed this would already be present; so far it seems ok that I added it?
+            app.MapNextjsStaticHtmls(); // TODO: order? relative to auth, routing, etc?
+            app.UseNextjsStaticHosting(); // TODO: order?
+
             // Configure the HTTP request pipeline.
             //if (app.Environment.IsDevelopment())
             {
@@ -54,6 +73,8 @@ namespace BuzzerWolf.Server
 
             //app.UseHttpsRedirection();
 
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -61,17 +82,6 @@ namespace BuzzerWolf.Server
 
             app.MapFallbackToFile("/index.html");
 
-            // nextjs static .net hosting integration
-            // TODO: nextjsstatichosting docs assumed this would already be present
-            //  it might be conflicting with the Server or Swagger?
-            //  "System.InvalidOperationException: Endpoint BuzzerWolf.Server.Controllers.CountryController.Index (BuzzerWolf.Server) contains authorization metadata, but a middleware was not found that supports authorization.
-            //  Configure your application startup by adding app.UseAuthorization() in the application startup code. If there are calls to app.UseRouting() and app.UseEndpoints(...), the call to app.UseAuthorization() must go between them."
-            // I imagine it will eventually be needed for something but the currently very-basic implementation for the frontend is working as intended for now
-            // Sounds like there's probably a solution with implementing some auth middleware but it's well beyond my windows server knowledge :)
-            //app.UseRouting(); 
-            app.MapNextjsStaticHtmls();
-            app.UseNextjsStaticHosting();
-            
             app.Run();
         }
 

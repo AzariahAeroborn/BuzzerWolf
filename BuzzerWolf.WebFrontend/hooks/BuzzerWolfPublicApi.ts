@@ -14,6 +14,7 @@ export function usePublicApi() {
   ) => {
     // Construct query parameters
     let url = `${API_URL}${endpoint}`;
+    console.log("url:", url);
     if (options?.query) {
       const params = new URLSearchParams(
         Object.entries(options.query).map(([key, value]) => [key, String(value)])
@@ -34,9 +35,17 @@ export function usePublicApi() {
     }
 
     const response = await fetch(url, fetchOptions);
+    console.log("response:", response);
 
     if (!response.ok) {
       throw new Error(`API call failed: ${response.statusText}`);
+    }
+
+    // Check if the response body is empty before parsing as JSON
+    const contentLength = response.headers.get('Content-Length');
+    if (contentLength === '0' || response.status === 204) {
+      // Empty success response (e.g., HTTP 204 No Content)
+      return null;
     }
 
     return response.json();

@@ -32,32 +32,47 @@ export default function LoginForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 shadow-md rounded">
-      <h2 className="text-2xl text-secondary font-bold mb-4">Log In</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="p-6 bg-background shadow-md rounded"
+    >
+      <h2 className="text-2xl text-foreground font-bold mb-4">Log In</h2>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <div className="mb-4">
-        <label className="block text-sm text-neutral-dark font-bold mb-2">Username</label>
+        <label
+          htmlFor="username"
+          className="block text-foreground text-sm font-bold mb-2"
+        >
+          Username
+        </label>
         <input
+          id="username"
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-3 py-2 border rounded focus:outline-none"
+          className="w-full px-3 py-2 border border-neutral focus:border-primary focus:ring focus:ring-primary-light bg-background text-foreground rounded"
           required
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm text-foreground font-bold mb-2">Access Key</label>
+        <label
+          htmlFor="accessKey"
+          className="block text-foreground text-sm font-bold mb-2"
+        >
+          Access Key
+        </label>
         <input
+          id="accessKey"
           type="password"
           value={accessKey}
           onChange={(e) => setAccessKey(e.target.value)}
-          className="w-full px-3 py-2 border rounded focus:outline-none"
+          className="w-full px-3 py-2 border border-neutral focus:border-primary focus:ring focus:ring-primary-light bg-background text-foreground rounded"
           required
         />
       </div>
       <button
         type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+        className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark focus:outline-none focus:ring focus:ring-primary-light"
       >
         Log In
       </button>
