@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { useApi } from '@/hooks/BuzzerWolfApi';
 
-interface Credentials {
+export interface Credentials {
   username: string;
   accessKey: string;
 }

@@ -65,7 +65,10 @@ export function useApi() {
 
   const login = (credentials: Credentials) =>
     post('/login', {
-      query: credentials,
+      query: {
+        username: credentials.username,
+        accessKey: credentials.accessKey,
+      },
     });
 
   const country = () => get('/country');

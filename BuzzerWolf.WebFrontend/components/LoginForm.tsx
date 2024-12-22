@@ -1,31 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
-export default function LoginForm({ onLogin }: { onLogin: (authData: any) => void }) {
+export default function LoginForm() {
+  const { login } = useAuth(); // Get the login function from AuthContext
   const [username, setUsername] = useState('');
-  const [accessCode, setAccessCode] = useState('');
+  const [accessKey, setAccessKey] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const response = await fetch('/api/test-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, accessCode }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Invalid credentials');
-      }
-
-      const data = await response.json();
-      onLogin(data); // Call the onLogin handler with the response data
+      await login({ username, accessKey: accessKey }); // Use context login method
+      router.push('/home'); // Redirect to dashboard on successful login
     } catch (err) {
       console.error(err);
       setError((err as Error)?.message || 'An error occurred');
@@ -47,11 +39,11 @@ export default function LoginForm({ onLogin }: { onLogin: (authData: any) => voi
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">Access Code</label>
+        <label className="block text-gray-700 text-sm font-bold mb-2">Access Key</label>
         <input
           type="password"
-          value={accessCode}
-          onChange={(e) => setAccessCode(e.target.value)}
+          value={accessKey}
+          onChange={(e) => setAccessKey(e.target.value)}
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           required
         />
