@@ -7,13 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Bymse.AspNetCore.NextJsStaticHosting" Version="0.0.3" />
 		<PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="8.1.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="NextjsStaticHosting.AspNetCore" Version="0.9.3-preview" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
 	</ItemGroup>
 

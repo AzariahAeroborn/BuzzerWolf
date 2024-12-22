@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 // nextjs .net static hosting
-using AspNetCore.NextJsStaticHosting;
-using Microsoft.Extensions.FileProviders;
+using NextjsStaticHosting.AspNetCore;
 
 namespace BuzzerWolf.Server
 {
@@ -31,6 +30,10 @@ namespace BuzzerWolf.Server
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // nextjs .net static hosting
+            //builder.Services.Configure<NextjsStaticHostingOptions>(builder.Configuration.GetSection("NextjsStaticHosting"));
+            //builder.Services.AddNextjsStaticHosting();
 
             var app = builder.Build();
             using var scope = app.Services.CreateScope();
@@ -59,18 +62,9 @@ namespace BuzzerWolf.Server
             app.MapFallbackToFile("/index.html");
 
             // nextjs static .net hosting integration
-            var latestVersion = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "out", "latest"));
-            var previousDeployment = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "out", "previous")); // optional
-
-            app.MapNextJsStaticEndpoints(new NextJsStaticEndpointsOptions(latestVersion));
-
-            app.UseNextJsStaticFiles(new NextJsStaticFilesOptions
-            {
-                FileProvider = new CompositeFileProvider(
-                    latestVersion,
-                    previousDeployment
-                )
-            });
+            //app.UseRouting(); // TODO: nextjsstatichosting docs assumed this would already be present, so I added it
+            //app.MapNextjsStaticHtmls();
+            //app.UseNextjsStaticHosting();
 
             app.Run();
         }
