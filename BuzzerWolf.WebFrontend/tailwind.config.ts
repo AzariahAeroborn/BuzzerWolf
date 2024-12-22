@@ -6,6 +6,7 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -20,6 +21,12 @@ export default {
         neutral: "var(--neutral)",
         "neutral-light": "var(--neutral-light)",
         "neutral-dark": "var(--neutral-dark)",
+        sidebarBg: 'var(--color-sidebar-bg)',
+        textPrimary: 'var(--color-text-primary)',
+        linkHover: 'var(--color-link-hover)',
+        'sidebar-bg': 'var(--color-sidebar-bg)',
+        'sidebar-text': 'var(--color-sidebar-text)',
+        'sidebar-hover': 'var(--color-sidebar-hover)',
       },
     },
   },

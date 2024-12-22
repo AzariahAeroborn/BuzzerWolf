@@ -1,10 +1,12 @@
 'use client';
 
+import { useCallback, useMemo } from 'react';
+
 const API_URL = 'http://localhost:8080';
 
 export function usePublicApi() {
 
-  const makePublicApiCall = async (
+  const makePublicApiCall = useCallback(async (
     endpoint: string,
     method: 'GET' | 'POST',
     options?: {
@@ -49,27 +51,35 @@ export function usePublicApi() {
     }
 
     return response.json();
-  };
+  }, []);
 
-  const get = (endpoint: string, query?: Record<string, string | number | boolean>) =>
-    makePublicApiCall(endpoint, 'GET', { query });
+  const get = useCallback(
+    (endpoint: string, query?: Record<string, string | number | boolean>) =>
+        makePublicApiCall(endpoint, 'GET', { query }),
+    [makePublicApiCall]
+  );
 
-  const post = (
-    endpoint: string,
-    options?: {
-      query?: Record<string, string | number | boolean>;
-      body?: Record<string, any>;
-    }
-  ) => makePublicApiCall(endpoint, 'POST', options);
+  const post = useCallback(
+    (
+      endpoint: string,
+      options?: {
+        query?: Record<string, string | number | boolean>;
+        body?: Record<string, any>;
+      }
+    ) => makePublicApiCall(endpoint, 'POST', options),
+    [makePublicApiCall]
+  );
 
-  const login = (username: string, accessKey: string, secondTeam: boolean) =>
+  const login = useCallback((username: string, accessKey: string, secondTeam: boolean) =>
     post('/login', {
       query: {
         username: username,
         accessKey: accessKey,
         secondTeam: secondTeam,
       },
-    });
+    }),
+    [post]
+  );
 
-  return { makePublicApiCall, login };
+  return useMemo(() => ({ makePublicApiCall, login }), [makePublicApiCall, login]);
 }

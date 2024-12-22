@@ -15,6 +15,9 @@
   --neutral: #6B7280; /* Neutral gray */
   --neutral-light: #A1A1AA;
   --neutral-dark: #374151;
+  --color-sidebar-bg: #f9fafb; /* Light mode sidebar background */
+  --color-sidebar-text: #111827; /* Light mode sidebar text */
+  --color-sidebar-hover: #e5e7eb; /* Light mode hover background */
 }
 
 /* Dark Mode Variables */
@@ -31,12 +34,23 @@
     --neutral: #D1D5DB;
     --neutral-light: #E5E7EB;
     --neutral-dark: #4B5563;
+    --color-sidebar-bg: #1f2937; /* Dark mode sidebar background */
+    --color-sidebar-text: #f3f4f6; /* Dark mode sidebar text */
+    --color-sidebar-hover: #374151; /* Dark mode hover background */
   }
 }
 
 /* Default body styles */
 body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+main {
+  overflow-y: auto;
+  height: 100vh;
 }

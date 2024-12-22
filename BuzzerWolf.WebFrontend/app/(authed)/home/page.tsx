@@ -40,12 +40,12 @@ export default function TeamHome() {
   return (
     <div>
       {auth && <h1>Welcome, {auth.username}!</h1>}
-      <button
+      {/* <button
         onClick={logout}
         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
       >
         Log Out
-      </button>
+      </button> */}
 
       <div className="mt-4">
         <h2 className="text-lg font-bold">Countries</h2>
