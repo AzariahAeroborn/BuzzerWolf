@@ -52,7 +52,7 @@ export default function TeamHome() {
           </div>
           <div className="flex justify-between">
             <span className="font-medium">Finish:</span>
-            <span>{currentSeasonInfo.finish || 'N/A'}</span>
+            <span>{currentSeasonInfo.finish || 'Ongoing'}</span>
           </div>
         </div>
         )}

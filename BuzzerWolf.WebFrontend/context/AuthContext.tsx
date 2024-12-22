@@ -13,22 +13,26 @@ export interface Credentials {
 
 interface AuthContextType {
   auth: Credentials | null;
+  isAuthLoading: boolean;
   login: (credentials: Credentials) => Promise<void>;
   logout: () => void;
-  getCredentials: () => Credentials | null; // Abstraction for accessing credentials
+  getCredentials: () => Credentials | null; // just an abstraction/alias for accessing credentials, maybe not a good idea
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [auth, setAuth] = useState<Credentials | null>(() => {
-    if (typeof window !== 'undefined') {
-      const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
-      return storedAuth ? JSON.parse(storedAuth) : null;
-    }
-    return null;
-  });
+  const [auth, setAuth] = useState<Credentials | null>(null);
+  const [isAuthLoading, setAuthLoading] = useState(true);
   const { login: apiLogin } = usePublicApi();
+
+  useEffect(() => {
+    const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (storedAuth) {
+      setAuth(JSON.parse(storedAuth));
+    }
+    setAuthLoading(false);
+  }, []);
 
   const login = async (credentials: Credentials) => {
     await apiLogin(credentials.username, credentials.accessKey, credentials.secondTeam); // Call API to verify credentials as our idea of 'login'
@@ -56,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, getCredentials }}>
+    <AuthContext.Provider value={{ auth, isAuthLoading, login, logout, getCredentials }}>
       {children}
     </AuthContext.Provider>
   );

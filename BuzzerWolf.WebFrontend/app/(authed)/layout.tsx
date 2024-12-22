@@ -6,20 +6,26 @@ import { ReactNode, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 
 export default function AuthenticatedLayout({ children }: { children: ReactNode }) {
-  const { auth } = useAuth();
+  const { auth, isAuthLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!auth) {
-      router.push('/'); // Redirect to login if not authenticated
+    if (!isAuthLoading && !auth) {
+      router.push('/'); // Redirect to login if unauthenticated
     }
-  }, [auth, router]);
+  }, [isAuthLoading, auth, router]);
 
-  // AP: pretty sure this isn't needed though chatgpt made an overcomplicated explanation
-  //  we should keep an eye out for flickers of content beating the redirect
-//   if (!auth) {
-//     return null; // Optionally render a loading spinner here
-//   }
+  // apparently since auth loads asynchronously it's possible to
+  // try to render the layout before auth is loaded, so we need to
+  // be careful not to show any sensitive data or cause screen flickers
+  // while things initialize
+  if (!auth) {
+    return null; // Optionally render a loading spinner here
+  }
+
+  if (isAuthLoading) {
+    return <div>Loading...</div>; // Render a loading indicator while auth is being initialized
+  }
 
   return (
     <div className="flex h-screen">

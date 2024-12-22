@@ -1,18 +1,25 @@
 'use client';
 
+import { useEffect } from 'react';
 import LoginForm from '@/components/LoginForm';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const { getCredentials, login } = useAuth();
+  const { auth, login } = useAuth();
   const router = useRouter();
 
-  const credentials = getCredentials();
-  if (credentials) {
-    console.log("already logged in, redirecting to /home");
-    router.push('/home');
+  useEffect(() => {
+    if (auth) {
+      console.log('already logged in, redirecting to /home');
+      router.push('/home'); // Redirect if already logged in
+    }
+  }, [auth, router]);
+
+  if (auth) {
+    return null; // Prevent rendering if redirecting
   }
+
 
   const handleLogin = async (username: string, accessKey: string, secondTeam: boolean) => {
     await login({ username, accessKey, secondTeam }); // default behavior on success is to redirect to /home
