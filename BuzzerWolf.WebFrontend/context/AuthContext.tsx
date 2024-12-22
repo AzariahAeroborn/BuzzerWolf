@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { useApi } from '@/hooks/BuzzerWolfApi';
 
 interface Credentials {
   username: string;
@@ -7,21 +8,28 @@ interface Credentials {
 
 interface AuthContextType {
   auth: Credentials | null;
-  login: (credentials: Credentials) => void;
-  getCredentials: () => Credentials | null;
+  login: (credentials: Credentials) => Promise<void>;
+  logout: () => void;
+  getCredentials: () => Credentials | null; // Abstraction for accessing credentials
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [auth, setAuth] = useState<Credentials | null>(null);
+  const { login: apiLogin } = useApi();
 
-  const login = (credentials: Credentials) => setAuth(credentials);
+  const login = async (credentials: Credentials) => {
+    await apiLogin(credentials); // Call API to verify credentials as our idea of 'login'
+    setAuth(credentials); // Update auth state
+  };
 
-  const getCredentials = () => auth;
+  const logout = () => setAuth(null);
+
+  const getCredentials = () => auth; // Simple accessor for auth state
 
   return (
-    <AuthContext.Provider value={{ auth, login, getCredentials }}>
+    <AuthContext.Provider value={{ auth, login, logout, getCredentials }}>
       {children}
     </AuthContext.Provider>
   );

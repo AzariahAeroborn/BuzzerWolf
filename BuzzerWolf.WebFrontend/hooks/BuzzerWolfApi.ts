@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext';
+import { useAuth, Credentials } from '@/context/AuthContext';
 
 const API_URL = 'http://localhost:8080';
 
@@ -9,8 +9,8 @@ export function useApi() {
     endpoint: string,
     method: 'GET' | 'POST',
     options?: {
-      query?: Record<string, string | number | boolean>; // Query params
-      body?: Record<string, any>; // Optional body for POST
+      query?: Record<string, string | number | boolean>;
+      body?: Record<string, any>;
     }
   ) => {
     const credentials = getCredentials();
@@ -21,7 +21,7 @@ export function useApi() {
     const { username, accessKey } = credentials;
 
     // Construct query parameters
-    let url = endpoint;
+    let url = `${API_URL}${endpoint}`;
     if (options?.query) {
       const params = new URLSearchParams(
         Object.entries(options.query).map(([key, value]) => [key, String(value)])
@@ -63,12 +63,10 @@ export function useApi() {
     }
   ) => makeApiCall(endpoint, 'POST', options);
 
-  const login = (username: string, accessKey: string) => {
-    // login is a POST request to /login?username=...&accessKey=...
-    return post('/login', {
-      query: { username, accessKey },
+  const login = (credentials: Credentials) =>
+    post('/login', {
+      query: credentials,
     });
-  };
 
   const country = () => get('/country');
 
