@@ -3,6 +3,10 @@ using BuzzerWolf.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
+// nextjs .net static hosting
+using AspNetCore.NextJsStaticHosting;
+using Microsoft.Extensions.FileProviders;
+
 namespace BuzzerWolf.Server
 {
     public class Program
@@ -53,6 +57,20 @@ namespace BuzzerWolf.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
+
+            // nextjs static .net hosting integration
+            var latestVersion = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "out", "latest"));
+            var previousDeployment = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "out", "previous")); // optional
+
+            app.MapNextJsStaticEndpoints(new NextJsStaticEndpointsOptions(latestVersion));
+
+            app.UseNextJsStaticFiles(new NextJsStaticFilesOptions
+            {
+                FileProvider = new CompositeFileProvider(
+                    latestVersion,
+                    previousDeployment
+                )
+            });
 
             app.Run();
         }
