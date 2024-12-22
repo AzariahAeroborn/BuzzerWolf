@@ -13,7 +13,7 @@ type Country = {
   };
 
 export default function TeamHome() {
-  const { auth, logout } = useAuth();
+  const { auth } = useAuth();
   const { country } = useApi();
   const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(false);
