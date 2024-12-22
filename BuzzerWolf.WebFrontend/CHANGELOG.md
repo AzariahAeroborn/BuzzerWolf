@@ -14,3 +14,11 @@ The following steps were used to generate this project:
 - Create `.eslintrc.json` to enable linting.
 - Add project to solution.
 - Write this file.
+
+
+Additional details done manually since Visual Studio wasn't offering a NextJS template:
+- Ran `npx create-next-app@latest nextjs-frontend` separately to generate a template NextJS project
+- Deleted conflicting files like package.json, eslint, etc. from the Visual Studio generated non-NextJS project
+- Copied NextJS template into Visual Studio project's location
+- Deleted NextJS template
+- Re-ran `npm i`
