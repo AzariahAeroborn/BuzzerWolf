@@ -32,6 +32,7 @@
 		<ItemGroup>
 			<WebFrontendStaticFiles Include="..\BuzzerWolf.WebFrontEnd\out\**" />
 		</ItemGroup>
+		<Message Text="Copying files from @(WebFrontEndStaticFiles) to $(PublishDir)" Importance="high" />
 		<Copy SourceFiles="@(WebFrontEndStaticFiles)" DestinationFolder="$(PublishDir)\%(RecursiveDir)" />
 	</Target>
 </Project>
