@@ -3,7 +3,7 @@
 import { useCallback, useMemo } from 'react';
 import { useAuth, Credentials } from '@/context/AuthContext';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'api';
 
 export function useApi() {
   const { getCredentials, logout } = useAuth();

@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'api';
 
 export function usePublicApi() {
 

@@ -14,20 +14,6 @@ namespace BuzzerWolf.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-9.0#cors-with-named-policy-and-middleware
-            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  policy =>
-                                  {
-                                      policy.WithOrigins("http://localhost:3000") // can add more origins like policy.WithOrigins("http://localhost:3000", "http://localhost:3001", ...)
-                                            .AllowAnyHeader() // Allow any headers (e.g., Content-Type, Authorization)
-                                            .AllowAnyMethod() // Allow any HTTP methods (GET, POST, etc.)
-                                            .AllowCredentials(); // looks like we're lining up to support this? though in my experience it's a bit annoying
-                                  });
-            });
-
             // Support cookie authentication
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -91,8 +77,6 @@ namespace BuzzerWolf.Server
             }
 
             //app.UseHttpsRedirection();
-
-            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
             app.UseAuthorization();
