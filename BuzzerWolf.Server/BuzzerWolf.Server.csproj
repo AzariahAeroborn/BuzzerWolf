@@ -19,23 +19,10 @@
 
 	<ItemGroup>
 		<Folder Include="Migrations\" />
+		<Content Include="nodeapp\**" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BuzzerWolf.WebFrontend\BuzzerWolf.WebFrontend.esproj" />
 	</ItemGroup>
-
-	<Target Name="CleanPublishDir" BeforeTargets="Build">
-		<RemoveDir Directories="$(PublishDir)" />
-	</Target>
-	<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" >
-		<ItemGroup Condition="'$(GITHUB_WORKSPACE)' != ''">
-			<WebFrontendStaticFiles Include="$(GITHUB_WORKSPACE)\BuzzerWolf.WebFrontEnd\out\**" />
-		</ItemGroup>
-		<ItemGroup Condition="'$(GITHUB_WORKSPACE)' == ''">
-			<WebFrontendStaticFiles Include="..\BuzzerWolf.WebFrontEnd\out\**" />
-		</ItemGroup>
-		<Message Text="Copying files from @(WebFrontEndStaticFiles) to $(PublishDir)" Importance="high" />
-		<Copy SourceFiles="@(WebFrontEndStaticFiles)" DestinationFolder="$(PublishDir)\%(RecursiveDir)" />
-	</Target>
 </Project>
