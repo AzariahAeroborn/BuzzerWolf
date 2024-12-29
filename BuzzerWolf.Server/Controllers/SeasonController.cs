@@ -6,7 +6,7 @@ namespace BuzzerWolf.Server.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("season")]
+    [Route("api/season")]
     public class SeasonController(IBBDataService dataService, ILogger<AutoPromotionController> logger) : Controller
     {
         [HttpGet()]

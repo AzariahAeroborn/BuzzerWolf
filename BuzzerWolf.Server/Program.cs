@@ -77,10 +77,17 @@ namespace BuzzerWolf.Server
             app.UseNextjsStaticHosting(); // TODO: order?
 
             // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwagger(c =>
+                {
+                    c.RouteTemplate = "api/swagger/{documentname}/swagger.json";
+                });
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "BuzzerWolf API V1");
+                    c.RoutePrefix = "api/swagger";
+                });
             }
 
             //app.UseHttpsRedirection();

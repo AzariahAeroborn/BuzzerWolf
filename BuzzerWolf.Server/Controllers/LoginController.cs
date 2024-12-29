@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace BuzzerWolf.Server.Controllers
 {
     [ApiController]
-    [Route("login")]
+    [Route("api/login")]
     public class LoginController : Controller
     {
         private readonly IBBAPIClient _bbapi;
