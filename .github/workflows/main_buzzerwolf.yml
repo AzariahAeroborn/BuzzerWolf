@@ -26,6 +26,8 @@ jobs:
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        env:
+          GITHUB_WORKSPACE: ${{env.GITHUB_WORKSPACE}}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
