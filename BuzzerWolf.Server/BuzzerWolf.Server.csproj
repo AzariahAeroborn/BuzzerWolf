@@ -24,20 +24,20 @@
 	<Target Name="BuildNodeApp" BeforeTargets="BeforeBuild">
 		<Message Text="Building Node App for deploy" Importance="high" />
 		<RemoveDir Directories="nodeapp" />
-		<Exec Command="npm run --prefix ..\BuzzerWolf.WebFrontend build" />
+		<Exec Command="npm run --prefix ../BuzzerWolf.WebFrontend build" />
 	</Target>
 	<Target Name="CopyNodeAppDebugBuild" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
 		<ItemGroup>
-			<NodeAppFiles Include="..\BuzzerWolf.WebFrontend\out\**" />
+			<NodeAppFiles Include="../BuzzerWolf.WebFrontend/out/**" />
 		</ItemGroup>
-		<Message Text="Copying Node App to debug build directory $(OutDir)\nodeapp\" Importance="high" />
-		<Copy SourceFiles="@(NodeAppFiles)" DestinationFolder="$(OutDir)\nodeapp\%(RecursiveDir)" />
+		<Message Text="Copying Node App to debug build directory $(OutDir)/nodeapp/" Importance="high" />
+		<Copy SourceFiles="@(NodeAppFiles)" DestinationFolder="$(OutDir)/nodeapp/%(RecursiveDir)" />
 	</Target>
 	<Target Name="CopyNodeAppReleasePublish" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release'">
 		<ItemGroup>
-			<NodeAppFiles Include="..\BuzzerWolf.WebFrontend\out\**" />
+			<NodeAppFiles Include="../BuzzerWolf.WebFrontend/out/**" />
 		</ItemGroup>
-		<Message Text="Copying Node App to publish directory $(PublishDir)\nodeapp\" Importance="high" />
-		<Copy SourceFiles="@(NodeAppFiles)" DestinationFolder="$(PublishDir)\nodeapp\%(RecursiveDir)" />
+		<Message Text="Copying Node App to publish directory $(PublishDir)/nodeapp/" Importance="high" />
+		<Copy SourceFiles="@(NodeAppFiles)" DestinationFolder="$(PublishDir)/nodeapp/%(RecursiveDir)" />
 	</Target>
 </Project>
