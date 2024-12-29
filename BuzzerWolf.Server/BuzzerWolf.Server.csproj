@@ -29,7 +29,10 @@
 		<RemoveDir Directories="$(PublishDir)" />
 	</Target>
 	<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" >
-		<ItemGroup>
+		<ItemGroup Condition="'$(GITHUB_WORKSPACE)' != ''">
+			<WebFrontendStaticFiles Include="$(GITHUB_WORKSPACE)\BuzzerWolf.WebFrontEnd\out\**" />
+		</ItemGroup>
+		<ItemGroup Condition="'$(GITHUB_WORKFLOW)' == ''">
 			<WebFrontendStaticFiles Include="..\BuzzerWolf.WebFrontEnd\out\**" />
 		</ItemGroup>
 		<Message Text="Copying files from @(WebFrontEndStaticFiles) to $(PublishDir)" Importance="high" />
