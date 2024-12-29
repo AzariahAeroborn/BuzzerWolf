@@ -19,11 +19,19 @@
 
 	<ItemGroup>
 		<Folder Include="Migrations\" />
-		<None Include="$(SolutionDir)\BuzzerWolf.WebFrontEnd\out\**" CopyToOutputDirectory="PreserveNewest" LinkBase="wwwroot\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\BuzzerWolf.WebFrontend\BuzzerWolf.WebFrontend.esproj" />
 	</ItemGroup>
 
+	<Target Name="CleanPublishDir" BeforeTargets="Build">
+		<RemoveDir Directories="$(PublishDir)" />
+	</Target>
+	<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" >
+		<ItemGroup>
+			<WebFrontendStaticFiles Include="$(SolutionDir)\BuzzerWolf.WebFrontEnd\out\**" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WebFrontEndStaticFiles)" DestinationFolder="$(PublishDir)\%(RecursiveDir)" />
+	</Target>
 </Project>
