@@ -3,6 +3,9 @@ using BuzzerWolf.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
+// nextjs .net static hosting
+using NextjsStaticHosting.AspNetCore;
+
 namespace BuzzerWolf.Server
 {
     public class Program
@@ -28,21 +31,49 @@ namespace BuzzerWolf.Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // nextjs .net static hosting
+            builder.Services.Configure<NextjsStaticHostingOptions>(builder.Configuration.GetSection("NextjsStaticHosting"));
+            builder.Services.AddNextjsStaticHosting();
+
             var app = builder.Build();
             using var scope = app.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<BuzzerWolfContext>();
             db.Database.Migrate();
 
-            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
+            // TODO: AP: merging the frontend and the api into kinda this one server is making the auth situation pretty confusing
+            //app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Strict });
+            CookieSecurePolicy cookieSecurityPolicy = CookieSecurePolicy.Always;
+            if(app.Environment.IsDevelopment())
+            {
+                cookieSecurityPolicy = CookieSecurePolicy.SameAsRequest;
+            }
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.None, // Allow cross-origin cookies
+                Secure = cookieSecurityPolicy
+            });
+
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            // nextjs static .net hosting integration
+            app.UseRouting(); // TODO: nextjsstatichosting docs assumed this would already be present; so far it seems ok that I added it?
+            app.MapNextjsStaticHtmls(); // TODO: order? relative to auth, routing, etc?
+            app.UseNextjsStaticHosting(); // TODO: order?
+
             // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwagger(c =>
+                {
+                    c.RouteTemplate = "api/swagger/{documentname}/swagger.json";
+                });
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "BuzzerWolf API V1");
+                    c.RoutePrefix = "api/swagger";
+                });
             }
 
             //app.UseHttpsRedirection();

@@ -11,5 +11,9 @@
   "BBAPIPublicUser": {
     "UserName": "",
     "AccessKey": ""
+  },
+  "NextjsStaticHosting": {
+    // Must match where the Next.js app outputs are published, relative to the app's ContentRootPath.
+    "RootPath": "../BuzzerWolf.WebFrontend/out"
   }
 }

@@ -6,7 +6,7 @@ namespace BuzzerWolf.Server.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("country")]
+    [Route("api/country")]
     public class CountryController(IBBDataService dataService, ILogger<AutoPromotionController> logger) : Controller
     {
         [HttpGet()]

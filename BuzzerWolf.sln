@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BuzzerWolf.WebFrontend", "BuzzerWolf.WebFrontend\BuzzerWolf.WebFrontend.esproj", "{E416598B-D25F-465C-99E8-818EBAAC3CE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,12 @@ Global
 		{2938F9BD-D0F8-4F24-8C22-B408FBDA37C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2938F9BD-D0F8-4F24-8C22-B408FBDA37C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2938F9BD-D0F8-4F24-8C22-B408FBDA37C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E416598B-D25F-465C-99E8-818EBAAC3CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E416598B-D25F-465C-99E8-818EBAAC3CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E416598B-D25F-465C-99E8-818EBAAC3CE8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E416598B-D25F-465C-99E8-818EBAAC3CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E416598B-D25F-465C-99E8-818EBAAC3CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E416598B-D25F-465C-99E8-818EBAAC3CE8}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

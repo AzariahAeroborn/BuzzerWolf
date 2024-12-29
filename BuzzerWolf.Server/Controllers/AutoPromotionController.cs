@@ -6,7 +6,7 @@ namespace BuzzerWolf.Server.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("autopromotion")]
+    [Route("api/autopromotion")]
     public class AutoPromotionController(IBBDataService dataService, ILogger<AutoPromotionController> logger) : Controller
     {
         [HttpGet()]
