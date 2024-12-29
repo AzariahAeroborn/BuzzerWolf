@@ -24,7 +24,8 @@
 	<Target Name="BuildNodeApp" BeforeTargets="BeforeBuild">
 		<Message Text="Building Node App for deploy" Importance="high" />
 		<RemoveDir Directories="nodeapp" />
-		<Exec Command="npm run --prefix ../BuzzerWolf.WebFrontend build" />
+		<Exec Command="npm install" WorkingDirectory="../BuzzerWolf.WebFrontend" />
+		<Exec Command="npm run build" WorkingDirectory="../BuzzerWolf.WebFrontend" />
 	</Target>
 	<Target Name="CopyNodeAppDebugBuild" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
 		<ItemGroup>
