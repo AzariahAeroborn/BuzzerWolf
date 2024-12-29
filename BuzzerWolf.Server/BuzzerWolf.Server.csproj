@@ -30,7 +30,7 @@
 	</Target>
 	<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" >
 		<ItemGroup>
-			<WebFrontendStaticFiles Include="$(SolutionDir)\BuzzerWolf.WebFrontEnd\out\**" />
+			<WebFrontendStaticFiles Include="..\BuzzerWolf.WebFrontEnd\out\**" />
 		</ItemGroup>
 		<Copy SourceFiles="@(WebFrontEndStaticFiles)" DestinationFolder="$(PublishDir)\%(RecursiveDir)" />
 	</Target>
